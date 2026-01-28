@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Murabbiylar uchun psixologik test (WebApp)</title>
+<style>
+body { font-family: Arial; background: #f4f7fa; padding: 20px; }
+.container { background: #fff; max-width: 850px; margin: auto; padding: 20px; border-radius: 12px; }
+h3 { color: #005b99; }
+label { display:block; margin:6px 0; }
+button { padding:10px 16px; background:#007acc; color:#fff; border:none; border-radius:8px; cursor:pointer; }
+.result { padding:10px; background:#eef5ff; border-left:5px solid #007acc; margin-top:20px; }
+</style>
+</head>
+<body>
+<div class="container">
+<div style="background:#e7f5ff; padding:15px; border-left:5px solid #007acc; margin-bottom:20px;">
+📝 Likert shkalasi: 1–5
+</div>
+<form id="coachForm">
+<h3>1. Men aniq sport yutuqlari uchun jamoam oldiga maqsadlar qo‘yaman.</h3>
+<label><input type="radio" name="q0" value="1">1</label>
+<label><input type="radio" name="q0" value="5">5</label>
+<button type="submit">✅ Natijani ko‘rish</button>
+</form>
+<div id="out" class="result"></div>
+</div>
+
+<script>
+if (window.Telegram && Telegram.WebApp) {
+  Telegram.WebApp.ready();
+}
+
+function sendToBot(resultData){
+  if (window.Telegram && Telegram.WebApp){
+    Telegram.WebApp.sendData(JSON.stringify(resultData));
+    Telegram.WebApp.close();
+  }
+}
+
+document.getElementById('coachForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const v = document.querySelector("input[name='q0']:checked");
+  const score = v ? parseInt(v.value) : 0;
+  document.getElementById('out').innerHTML =
+    "<strong>Ilmiy xulosa:</strong> Murabbiylik maqsadga yo‘naltirilganligi baholandi.";
+
+  sendToBot({
+    test: "murabbiy",
+    score: score
+  });
+});
+</script>
+</body>
+</html>

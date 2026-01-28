@@ -1,0 +1,75 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Sportchilar uchun psixologik test (WebApp)</title>
+<style>
+body { font-family: Arial; background: #f4f7fa; padding: 20px; }
+.container { background: #fff; max-width: 900px; margin: auto; padding: 20px; border-radius: 12px; }
+h2 { color: #007acc; }
+label { display: block; margin: 4px 0; }
+.bar-container { background-color: #eee; border-radius: 15px; overflow: hidden; margin: 5px 0; }
+.bar { height: 22px; background-color: #007acc; text-align: center; color: white; line-height: 22px; width: 0%; }
+.result { padding: 10px; background: #e6f0fa; border-left: 5px solid #007acc; margin-top: 10px; }
+button { padding: 10px 16px; background:#007acc; color:#fff; border:none; border-radius:8px; cursor:pointer; }
+</style>
+</head>
+<body>
+<div class="container">
+<div style="background:#e0f7ff; padding:12px; border-left:5px solid #007acc; margin-bottom:20px;">
+📝 Yo‘riqnoma: Har bir savolga faqat bitta javobni tanlang. Test yakunida sizning psixologik tayyorgarligingiz 4 yo‘nalish bo‘yicha baholanadi.
+</div>
+<form id="milmanForm">
+<p>1. Mas'uliyatli musobaqalarda qaysi holatda muvaffaqiyatliroq ishtirok etasiz?</p>
+<label><input name="q0" type="radio" value="a"/> Xotirjam holatda</label>
+<label><input name="q0" type="radio" value="b"/> Biroz hayajonlanganimda</label>
+<label><input name="q0" type="radio" value="c"/> Kuchli hayajon holatida</label>
+<p>2. Odatda musobaqalarda kuchli hayajonlanasizmi?</p>
+<label><input name="q1" type="radio" value="a"/> Ha</label>
+<label><input name="q1" type="radio" value="b"/> Ba'zida</label>
+<label><input name="q1" type="radio" value="c"/> Yo‘q</label>
+<button type="submit">✅ Natijani ko‘rish</button>
+</form>
+<div id="results">
+<h3>Natijalar</h3>
+<div class="bar-container"><div class="bar" id="emotsional_bar">0%</div></div>
+<div class="result" id="emotsional_result"></div>
+</div>
+</div>
+
+<script>
+if (window.Telegram && Telegram.WebApp) {
+  Telegram.WebApp.ready();
+}
+
+function sendToBot(resultData){
+  if (window.Telegram && Telegram.WebApp){
+    Telegram.WebApp.sendData(JSON.stringify(resultData));
+    Telegram.WebApp.close();
+  }
+}
+
+document.getElementById('milmanForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  // Minimal demo scoring
+  let score = 0;
+  const a = document.querySelector("input[name='q0']:checked");
+  const b = document.querySelector("input[name='q1']:checked");
+  if (a && a.value === 'a') score += 2;
+  if (b && b.value === 'c') score += 2;
+
+  const percent = Math.min(100, score * 25);
+  document.getElementById('emotsional_bar').style.width = percent + "%";
+  document.getElementById('emotsional_bar').textContent = percent + "%";
+  document.getElementById('emotsional_result').innerHTML =
+    "<strong>Ilmiy xulosa:</strong> Emotsional chidamlilik ko‘rsatkichi baholandi.";
+
+  sendToBot({
+    test: "sportchi",
+    emotsional_percent: percent
+  });
+});
+</script>
+</body>
+</html>
